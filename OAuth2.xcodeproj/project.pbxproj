@@ -1,0 +1,281 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		CAEB5A7814F7A4B400453EE4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAEB5A7714F7A4B400453EE4 /* UIKit.framework */; };
+		CAEB5A7A14F7A4B400453EE4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAEB5A7914F7A4B400453EE4 /* Foundation.framework */; };
+		CAEB5A7C14F7A4B400453EE4 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAEB5A7B14F7A4B400453EE4 /* CoreGraphics.framework */; };
+		CAEB5A8214F7A4B400453EE4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CAEB5A8014F7A4B400453EE4 /* InfoPlist.strings */; };
+		CAEB5A8414F7A4B400453EE4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CAEB5A8314F7A4B400453EE4 /* main.m */; };
+		CAEB5A8814F7A4B400453EE4 /* OAAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CAEB5A8714F7A4B400453EE4 /* OAAppDelegate.m */; };
+		CAEB5A8B14F7A4B400453EE4 /* OAViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CAEB5A8A14F7A4B400453EE4 /* OAViewController.m */; };
+		CAEB5A8E14F7A4B400453EE4 /* OAViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CAEB5A8C14F7A4B400453EE4 /* OAViewController.xib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		CAEB5A7314F7A4B400453EE4 /* OAuth2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OAuth2.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CAEB5A7714F7A4B400453EE4 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		CAEB5A7914F7A4B400453EE4 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		CAEB5A7B14F7A4B400453EE4 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		CAEB5A7F14F7A4B400453EE4 /* OAuth2-Info.plist */ = {isa = PBXFileReference; path = "OAuth2-Info.plist"; sourceTree = "<group>"; };
+		CAEB5A8114F7A4B400453EE4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CAEB5A8314F7A4B400453EE4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		CAEB5A8514F7A4B400453EE4 /* OAuth2-Prefix.pch */ = {isa = PBXFileReference; path = "OAuth2-Prefix.pch"; sourceTree = "<group>"; };
+		CAEB5A8614F7A4B400453EE4 /* OAAppDelegate.h */ = {isa = PBXFileReference; path = OAAppDelegate.h; sourceTree = "<group>"; };
+		CAEB5A8714F7A4B400453EE4 /* OAAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OAAppDelegate.m; sourceTree = "<group>"; };
+		CAEB5A8914F7A4B400453EE4 /* OAViewController.h */ = {isa = PBXFileReference; path = OAViewController.h; sourceTree = "<group>"; };
+		CAEB5A8A14F7A4B400453EE4 /* OAViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OAViewController.m; sourceTree = "<group>"; };
+		CAEB5A8D14F7A4B400453EE4 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/OAViewController.xib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CAEB5A7014F7A4B400453EE4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CAEB5A7814F7A4B400453EE4 /* UIKit.framework in Frameworks */,
+				CAEB5A7A14F7A4B400453EE4 /* Foundation.framework in Frameworks */,
+				CAEB5A7C14F7A4B400453EE4 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		CAEB5A6814F7A4B400453EE4 = {
+			isa = PBXGroup;
+			children = (
+				CAEB5A7D14F7A4B400453EE4 /* OAuth2 */,
+				CAEB5A7614F7A4B400453EE4 /* Frameworks */,
+				CAEB5A7414F7A4B400453EE4 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		CAEB5A7414F7A4B400453EE4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CAEB5A7314F7A4B400453EE4 /* OAuth2.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CAEB5A7614F7A4B400453EE4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CAEB5A7714F7A4B400453EE4 /* UIKit.framework */,
+				CAEB5A7914F7A4B400453EE4 /* Foundation.framework */,
+				CAEB5A7B14F7A4B400453EE4 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		CAEB5A7D14F7A4B400453EE4 /* OAuth2 */ = {
+			isa = PBXGroup;
+			children = (
+				CAEB5A8614F7A4B400453EE4 /* OAAppDelegate.h */,
+				CAEB5A8714F7A4B400453EE4 /* OAAppDelegate.m */,
+				CAEB5A8914F7A4B400453EE4 /* OAViewController.h */,
+				CAEB5A8A14F7A4B400453EE4 /* OAViewController.m */,
+				CAEB5A8C14F7A4B400453EE4 /* OAViewController.xib */,
+				CAEB5A7E14F7A4B400453EE4 /* Supporting Files */,
+			);
+			path = OAuth2;
+			sourceTree = "<group>";
+		};
+		CAEB5A7E14F7A4B400453EE4 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				CAEB5A7F14F7A4B400453EE4 /* OAuth2-Info.plist */,
+				CAEB5A8014F7A4B400453EE4 /* InfoPlist.strings */,
+				CAEB5A8314F7A4B400453EE4 /* main.m */,
+				CAEB5A8514F7A4B400453EE4 /* OAuth2-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		CAEB5A7214F7A4B400453EE4 /* OAuth2 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CAEB5A9114F7A4B400453EE4 /* Build configuration list for PBXNativeTarget "OAuth2" */;
+			buildPhases = (
+				CAEB5A6F14F7A4B400453EE4 /* Sources */,
+				CAEB5A7014F7A4B400453EE4 /* Frameworks */,
+				CAEB5A7114F7A4B400453EE4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OAuth2;
+			productName = OAuth2;
+			productReference = CAEB5A7314F7A4B400453EE4 /* OAuth2.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CAEB5A6A14F7A4B400453EE4 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = OA;
+				LastUpgradeCheck = 0440;
+				ORGANIZATIONNAME = "Less Everything";
+			};
+			buildConfigurationList = CAEB5A6D14F7A4B400453EE4 /* Build configuration list for PBXProject "OAuth2" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = CAEB5A6814F7A4B400453EE4;
+			productRefGroup = CAEB5A7414F7A4B400453EE4 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CAEB5A7214F7A4B400453EE4 /* OAuth2 */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CAEB5A7114F7A4B400453EE4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CAEB5A8214F7A4B400453EE4 /* InfoPlist.strings in Resources */,
+				CAEB5A8E14F7A4B400453EE4 /* OAViewController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CAEB5A6F14F7A4B400453EE4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CAEB5A8414F7A4B400453EE4 /* main.m in Sources */,
+				CAEB5A8814F7A4B400453EE4 /* OAAppDelegate.m in Sources */,
+				CAEB5A8B14F7A4B400453EE4 /* OAViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		CAEB5A8014F7A4B400453EE4 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CAEB5A8114F7A4B400453EE4 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		CAEB5A8C14F7A4B400453EE4 /* OAViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CAEB5A8D14F7A4B400453EE4 /* en */,
+			);
+			name = OAViewController.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		CAEB5A8F14F7A4B400453EE4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		CAEB5A9014F7A4B400453EE4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		CAEB5A9214F7A4B400453EE4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "OAuth2/OAuth2-Prefix.pch";
+				INFOPLIST_FILE = "OAuth2/OAuth2-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		CAEB5A9314F7A4B400453EE4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "OAuth2/OAuth2-Prefix.pch";
+				INFOPLIST_FILE = "OAuth2/OAuth2-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CAEB5A6D14F7A4B400453EE4 /* Build configuration list for PBXProject "OAuth2" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CAEB5A8F14F7A4B400453EE4 /* Debug */,
+				CAEB5A9014F7A4B400453EE4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CAEB5A9114F7A4B400453EE4 /* Build configuration list for PBXNativeTarget "OAuth2" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CAEB5A9214F7A4B400453EE4 /* Debug */,
+				CAEB5A9314F7A4B400453EE4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = CAEB5A6A14F7A4B400453EE4 /* Project object */;
+}
