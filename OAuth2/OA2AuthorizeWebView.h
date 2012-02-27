@@ -17,15 +17,15 @@
 
 #import <Foundation/Foundation.h>
 
-@class OAuth2AuthorizeWebView;
+@class OA2AuthorizeWebView;
 
 @protocol OAuth2AuthorizeWebViewDelegate <NSObject>
 
-- (void)authorizeWebView:(OAuth2AuthorizeWebView *)webView didReceiveAuthorizeCode:(NSString *)code;
+- (void)authorizeWebView:(OA2AuthorizeWebView *)webView didReceiveAuthorizeCode:(NSString *)code;
 
 @end
 
-@interface OAuth2AuthorizeWebView : UIView <UIWebViewDelegate> 
+@interface OA2AuthorizeWebView : UIView <UIWebViewDelegate> 
 {
     UIView *panelView;
     UIView *containerView;

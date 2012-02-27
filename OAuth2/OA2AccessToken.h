@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <Security/Security.h>
 
-@interface OAuth2AccessToken : NSObject<NSCoding>
+@interface OA2AccessToken : NSObject<NSCoding>
 
 @property(copy,nonatomic) NSString*accessToken;
 @property(copy,nonatomic) NSString*refreshToken;
@@ -20,8 +20,8 @@
 
 - (id)initWithAccessToken:(NSString *)accessToken refreshToken:(NSString *)refreshToken expiresDuration:(int)duration scope:(NSSet *)scope;
 
-+ (OAuth2AccessToken*)tokenFromSinaResponse:(NSString*)string;
-+ (OAuth2AccessToken*)tokenFromRenrenResponse:(NSURL*)url;
++ (OA2AccessToken*)tokenFromSinaResponse:(NSData*)data;
++ (OA2AccessToken*)tokenFromRenrenResponse:(NSURL*)url;
 
 #pragma mark storage
 + (id)tokenFromDefaultKeychainWithServiceProviderName:(NSString *)provider;

@@ -10,7 +10,7 @@
 
 @interface OAViewController : UIViewController<UIWebViewDelegate>
 @property (retain, nonatomic) IBOutlet UIWebView *webview;
-- (void)handleCode:(NSString*)code;
+//- (void)handleCode:(NSString*)code;
 - (IBAction)onSina:(id)sender;
 - (IBAction)onRenren:(id)sender;
 @end

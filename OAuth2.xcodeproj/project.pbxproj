@@ -56,8 +56,8 @@
 		CA448C6114F7D54900308824 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA448C6014F7D54900308824 /* AudioToolbox.framework */; };
 		CA448C6214F7D55500308824 /* PLHttpBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = CA448C5D14F7D46000308824 /* PLHttpBlock.m */; };
 		CA72499914F88C9200FA3124 /* NSURL+_PL.m in Sources */ = {isa = PBXBuildFile; fileRef = CA72499814F88C9200FA3124 /* NSURL+_PL.m */; };
-		CA72499D14F8916E00FA3124 /* OAuth2AccessToken.m in Sources */ = {isa = PBXBuildFile; fileRef = CA72499C14F8916E00FA3124 /* OAuth2AccessToken.m */; };
-		CA7249A414F8A33000FA3124 /* OAuth2AuthorizeWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = CA7249A314F8A33000FA3124 /* OAuth2AuthorizeWebView.m */; };
+		CA72499D14F8916E00FA3124 /* OA2AccessToken.m in Sources */ = {isa = PBXBuildFile; fileRef = CA72499C14F8916E00FA3124 /* OA2AccessToken.m */; };
+		CA7249A414F8A33000FA3124 /* OA2AuthorizeWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = CA7249A314F8A33000FA3124 /* OA2AuthorizeWebView.m */; };
 		CA7249B714F8ADEC00FA3124 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = CA7249B614F8ADEC00FA3124 /* JSONKit.m */; };
 		CA7249BA14F8B0E100FA3124 /* OAEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = CA7249B914F8B0E100FA3124 /* OAEngine.m */; };
 		CA7249C114F8B3C300FA3124 /* close.png in Resources */ = {isa = PBXBuildFile; fileRef = CA7249BF14F8B3C300FA3124 /* close.png */; };
@@ -176,10 +176,10 @@
 		CA448C6014F7D54900308824 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		CA72499714F88C9200FA3124 /* NSURL+_PL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+_PL.h"; sourceTree = "<group>"; };
 		CA72499814F88C9200FA3124 /* NSURL+_PL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+_PL.m"; sourceTree = "<group>"; };
-		CA72499B14F8916E00FA3124 /* OAuth2AccessToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAuth2AccessToken.h; sourceTree = "<group>"; };
-		CA72499C14F8916E00FA3124 /* OAuth2AccessToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAuth2AccessToken.m; sourceTree = "<group>"; };
-		CA7249A214F8A33000FA3124 /* OAuth2AuthorizeWebView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAuth2AuthorizeWebView.h; sourceTree = "<group>"; };
-		CA7249A314F8A33000FA3124 /* OAuth2AuthorizeWebView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAuth2AuthorizeWebView.m; sourceTree = "<group>"; };
+		CA72499B14F8916E00FA3124 /* OA2AccessToken.h */ = {isa = PBXFileReference; fileEncoding = 4; path = OA2AccessToken.h; sourceTree = "<group>"; };
+		CA72499C14F8916E00FA3124 /* OA2AccessToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OA2AccessToken.m; sourceTree = "<group>"; };
+		CA7249A214F8A33000FA3124 /* OA2AuthorizeWebView.h */ = {isa = PBXFileReference; fileEncoding = 4; path = OA2AuthorizeWebView.h; sourceTree = "<group>"; };
+		CA7249A314F8A33000FA3124 /* OA2AuthorizeWebView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OA2AuthorizeWebView.m; sourceTree = "<group>"; };
 		CA7249B514F8ADEC00FA3124 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
 		CA7249B614F8ADEC00FA3124 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		CA7249B814F8B0E100FA3124 /* OAEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAEngine.h; sourceTree = "<group>"; };
@@ -428,10 +428,10 @@
 			children = (
 				CA7249BF14F8B3C300FA3124 /* close.png */,
 				CA7249C014F8B3C300FA3124 /* close@2x.png */,
-				CA7249A214F8A33000FA3124 /* OAuth2AuthorizeWebView.h */,
-				CA7249A314F8A33000FA3124 /* OAuth2AuthorizeWebView.m */,
-				CA72499B14F8916E00FA3124 /* OAuth2AccessToken.h */,
-				CA72499C14F8916E00FA3124 /* OAuth2AccessToken.m */,
+				CA7249A214F8A33000FA3124 /* OA2AuthorizeWebView.h */,
+				CA7249A314F8A33000FA3124 /* OA2AuthorizeWebView.m */,
+				CA72499B14F8916E00FA3124 /* OA2AccessToken.h */,
+				CA72499C14F8916E00FA3124 /* OA2AccessToken.m */,
 				CA448C5C14F7D46000308824 /* PLHttpBlock.h */,
 				CA448C5D14F7D46000308824 /* PLHttpBlock.m */,
 				CAEB5A8614F7A4B400453EE4 /* OAAppDelegate.h */,
@@ -572,8 +572,8 @@
 				CA448C5A14F7D43F00308824 /* XFPageController.m in Sources */,
 				CA448C6214F7D55500308824 /* PLHttpBlock.m in Sources */,
 				CA72499914F88C9200FA3124 /* NSURL+_PL.m in Sources */,
-				CA72499D14F8916E00FA3124 /* OAuth2AccessToken.m in Sources */,
-				CA7249A414F8A33000FA3124 /* OAuth2AuthorizeWebView.m in Sources */,
+				CA72499D14F8916E00FA3124 /* OA2AccessToken.m in Sources */,
+				CA7249A414F8A33000FA3124 /* OA2AuthorizeWebView.m in Sources */,
 				CA7249B714F8ADEC00FA3124 /* JSONKit.m in Sources */,
 				CA7249BA14F8B0E100FA3124 /* OAEngine.m in Sources */,
 			);

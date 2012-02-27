@@ -16,10 +16,10 @@
 //
 
 #import "OAEngine.h"
-#import "OAuth2AuthorizeWebView.h"
+#import "OA2AuthorizeWebView.h"
 #import <QuartzCore/QuartzCore.h> 
 
-@interface OAuth2AuthorizeWebView (Private)
+@interface OA2AuthorizeWebView (Private)
 
 - (void)bounceOutAnimationStopped;
 - (void)bounceInAnimationStopped;
@@ -36,7 +36,7 @@
 
 @end
 
-@implementation OAuth2AuthorizeWebView
+@implementation OA2AuthorizeWebView
 
 @synthesize delegate, type;
 

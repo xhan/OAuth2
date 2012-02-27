@@ -6,10 +6,10 @@
 //  Copyright (c) 2012 Less Everything. All rights reserved.
 //
 
-#import "OAuth2AccessToken.h"
+#import "OA2AccessToken.h"
 #import "JSONKit.h"
 
-@implementation OAuth2AccessToken
+@implementation OA2AccessToken
 @synthesize scope,expiresAt,accessToken,refreshToken, otherInfo;
 
 - (void)dealloc
@@ -66,17 +66,17 @@
 	return self;
 }
 
-+ (OAuth2AccessToken*)tokenFromSinaResponse:(NSString*)string
++ (OA2AccessToken*)tokenFromSinaResponse:(NSData*)data
 {
 //    NSString* contents = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     
 //    {"access_token":"2.00kXyBoB0yd2Nfcdd789eb500c2gPb","expires_in":86400,"remind_in":"18251","uid":"1655420692"}
-    NSDictionary*dict = [string objectFromJSONString];
+    NSDictionary*dict = [data objectFromJSONData];
     NSString* token = [dict objectForKey:@"access_token"];
     int expired = [[dict objectForKey:@"expires_in"] intValue];
     NSString* other = [dict objectForKey:@"uid"];
     if (token && expired && other) {
-        OAuth2AccessToken* instance = [[OAuth2AccessToken alloc] initWithAccessToken:token
+        OA2AccessToken* instance = [[OA2AccessToken alloc] initWithAccessToken:token
                                                                      refreshToken:nil
                                                                   expiresDuration:expired
                                                                             scope:nil];
@@ -87,7 +87,7 @@
     }
     
 }
-+ (OAuth2AccessToken*)tokenFromRenrenResponse:(NSURL*)url
++ (OA2AccessToken*)tokenFromRenrenResponse:(NSURL*)url
 {
     return nil;
 }

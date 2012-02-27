@@ -7,24 +7,28 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "OAuth2AccessToken.h"
-#import "OAuth2AuthorizeWebView.h"
+#import "OA2AccessToken.h"
+#import "OA2AuthorizeWebView.h"
 
 typedef enum{
-    OAuthProviderSina,
-    OAuthProviderRenRen
-}OAuthProvider;
+    OAProviderSina,
+    OAProviderRenRen
+}OAProvider;
 
-@interface OAEngine : NSObject<OAuth2AuthorizeWebViewDelegate>
+#import "PLHttpClient.h"
+
+@interface OAEngine : NSObject<OAuth2AuthorizeWebViewDelegate,PLHttpClientDelegate>
 {
-    OAuth2AccessToken *tokenSina, *tokenRenRen;
+    OA2AccessToken *tokenSina, *tokenRenRen;
+    PLHttpClient*client;
+    int type;   //current action type;
 }
-- (BOOL)isLogined:(OAuthProvider)provider;
-- (BOOL)isValid:(OAuthProvider)provider;
+- (BOOL)isLogined:(OAProvider)provider;
+- (BOOL)isValid:(OAProvider)provider;
 
 - (void)authorizedSina;
 - (void)authorizedRenren;
 
-@property(retain,nonatomic) OAuth2AccessToken*tokenSina;
-@property(retain,nonatomic) OAuth2AccessToken*tokenRenRen;
+@property(retain,nonatomic) OA2AccessToken*tokenSina;
+@property(retain,nonatomic) OA2AccessToken*tokenRenRen;
 @end
