@@ -15,10 +15,11 @@
 //  Copyright 2011 Sina. All rights reserved.
 //
 
-#import "WBAuthorizeWebView.h"
+#import "OAEngine.h"
+#import "OAuth2AuthorizeWebView.h"
 #import <QuartzCore/QuartzCore.h> 
 
-@interface WBAuthorizeWebView (Private)
+@interface OAuth2AuthorizeWebView (Private)
 
 - (void)bounceOutAnimationStopped;
 - (void)bounceInAnimationStopped;
@@ -35,9 +36,9 @@
 
 @end
 
-@implementation WBAuthorizeWebView
+@implementation OAuth2AuthorizeWebView
 
-@synthesize delegate;
+@synthesize delegate, type;
 
 #pragma mark - WBAuthorizeWebView Life Circle
 
@@ -64,10 +65,24 @@
         
         // add the web view
         webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 280, 390)];
+        webView.layer.cornerRadius = 5;
 		[webView setDelegate:self];
 		[containerView addSubview:webView];
         
         [panelView addSubview:containerView];
+        
+        
+        
+        // close button
+        UIButton* btn = [T createBtnfromFrame:ccr(0, 0, 32, 32)
+                                     imageStr:@"close.png"
+                              highlightImgStr:nil
+                                       target:self
+                                     selector:@selector(onCloseButtonTouched:)];
+        btn.right = panelView.width;
+        btn.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+        [panelView addSubview:btn];        
+        
         
         indicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         [indicatorView setCenter:CGPointMake(160, 240)];
@@ -316,19 +331,41 @@
 - (BOOL)webView:(UIWebView *)aWebView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
     NSLog(@"%@",request.URL.absoluteString);
-    NSRange range = [request.URL.absoluteString rangeOfString:@"code="];
+
+    if (type == OAuthProviderSina) {
+        return [self sinaHandleURLChange:request.URL];
+    }else if ( type == OAuthProviderRenRen)
+    {
+        return [self renrenHandleURLChange:request.URL];
+    }
+    return YES;
+}
+                         
+
+- (BOOL)sinaHandleURLChange:(NSURL*)url
+{
+    NSRange range = [url.absoluteString rangeOfString:@"code="];
     
     if (range.location != NSNotFound)
     {
-        NSString *code = [request.URL.absoluteString substringFromIndex:range.location + range.length];
-        
+        NSString *code = [url.absoluteString substringFromIndex:range.location + range.length];
+        if ([code isEqualToString:@"21330"]) {  //cancel contents
+            [self onCloseButtonTouched:nil];
+            return NO;
+        }
         if ([delegate respondsToSelector:@selector(authorizeWebView:didReceiveAuthorizeCode:)])
         {
             [delegate authorizeWebView:self didReceiveAuthorizeCode:code];
         }
+        return NO;
     }
-    
     return YES;
+    
+    
 }
-
+- (BOOL)renrenHandleURLChange:(NSURL*)url
+{
+    return NO;
+}
+                         
 @end

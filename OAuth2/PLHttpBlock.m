@@ -7,10 +7,10 @@
 //
 
 #import "PLHttpBlock.h"
-#import "APIEngine.h"
-#import "JSONKit.h"
+//#import "APIEngine.h"
+//#import "JSONKit.h"
 
-#define ENABLE_CACHE 1
+#define ENABLE_CACHE 0
 #if ENABLE_CACHE
 #import "CacheCenter.h"
 #endif
@@ -18,18 +18,35 @@
 
 @implementation PLHttpBlock
 
-- (void)getForce:(NSURL *)url ok:(PLBlockDict)blockOK fail:(PLBlockError)blockError
+
++ (NSString *)stringFromDictionary:(NSDictionary *)dict
+{
+    NSMutableArray *pairs = [NSMutableArray array];
+	for (NSString *key in [dict keyEnumerator])
+	{
+		if (!([[dict valueForKey:key] isKindOfClass:[NSString class]]))
+		{
+			continue;
+		}
+		
+		[pairs addObject:[NSString stringWithFormat:@"%@=%@", key, [[dict objectForKey:key] URLEscaped]]];
+	}
+	
+	return [pairs componentsJoinedByString:@"&"];
+}
+
+- (void)getForce:(NSURL *)url ok:(PLBlockOK)blockOK fail:(PLBlockError)blockError
 {
     [self _prepareBlock:blockOK fail:blockError];
     [super get:url];    
 }
 
-- (void)get:(NSURL *)url ok:(PLBlockDict)blockOK fail:(PLBlockError)blockError
+- (void)get:(NSURL *)url ok:(PLBlockOK)blockOK fail:(PLBlockError)blockError
 {
     [self get:url cache:15 ok:blockOK fail:blockError]; //cache 20 seconds
 }
 
-- (void)get:(NSURL *)url cache:(int)seconds ok:(PLBlockDict)blockOK fail:(PLBlockError)blockError
+- (void)get:(NSURL *)url cache:(int)seconds ok:(PLBlockOK)blockOK fail:(PLBlockError)blockError
 {
 #if ENABLE_CACHE    
     _cacheSeconds = seconds;
@@ -50,13 +67,13 @@
 }
 
 
-- (void)post:(NSURL *)url body:(NSString *)body ok:(PLBlockDict)blockOK fail:(PLBlockError)blockError
+- (void)post:(NSURL *)url body:(NSString *)body ok:(PLBlockOK)blockOK fail:(PLBlockError)blockError
 {
     [self _prepareBlock:blockOK fail:blockError];
     [super post:url body:body];
 }
 
-- (void)post:(NSURL *)url bodyDict:(NSDictionary *)body ok:(PLBlockDict)blockOK fail:(PLBlockError)blockError
+- (void)post:(NSURL *)url bodyDict:(NSDictionary *)body ok:(PLBlockOK)blockOK fail:(PLBlockError)blockError
 {
     [self post:url 
           body:[body JSONString] 
@@ -64,13 +81,13 @@
           fail:blockError];
 }
 
-- (void)postForm:(NSURL *)url params:(NSDictionary *)params file:(NSString*)name data:(NSData*)data ok:(PLBlockDict)blockOK fail:(PLBlockError)blockError
+- (void)postForm:(NSURL *)url params:(NSDictionary *)params file:(NSString*)name data:(NSData*)data ok:(PLBlockOK)blockOK fail:(PLBlockError)blockError
 {
     [self _prepareBlock:blockOK fail:blockError];
     [super postForm:url params:params fileName:name fileData:data];
 }
 
-- (void)_prepareBlock:(PLBlockDict)blockOK fail:(PLBlockError)blockError
+- (void)_prepareBlock:(PLBlockOK)blockOK fail:(PLBlockError)blockError
 {
     self.delegate = nil;
     [self _cleanBlock];    
@@ -115,9 +132,10 @@
 
 - (void)httpClient:(PLHttpClient *)hc successed:(NSData *)data
 {
-    NSError* error;
+    NSError* error = NULL;
 //    NSDictionary* dict = [DBFM parseContent:[hc stringValue] withError:&error];
-    NSDictionary* dict = [APIEngine parseContent:[hc stringValue] withError:&error];
+//    NSDictionary* dict = [APIEngine parseContent:[hc stringValue] withError:&error];
+    NSString* str = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
     if (error) {
         [self httpClient:hc failed:error];
     }else{
@@ -128,7 +146,7 @@
         _cacheSeconds = 0;
 #endif        
         if (_blockDict) {
-            _blockDict(dict);
+            _blockDict(str);
         }        
         [self _cleanBlock];
     }

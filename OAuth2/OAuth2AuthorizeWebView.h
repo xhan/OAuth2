@@ -17,15 +17,15 @@
 
 #import <Foundation/Foundation.h>
 
-@class WBAuthorizeWebView;
+@class OAuth2AuthorizeWebView;
 
-@protocol WBAuthorizeWebViewDelegate <NSObject>
+@protocol OAuth2AuthorizeWebViewDelegate <NSObject>
 
-- (void)authorizeWebView:(WBAuthorizeWebView *)webView didReceiveAuthorizeCode:(NSString *)code;
+- (void)authorizeWebView:(OAuth2AuthorizeWebView *)webView didReceiveAuthorizeCode:(NSString *)code;
 
 @end
 
-@interface WBAuthorizeWebView : UIView <UIWebViewDelegate> 
+@interface OAuth2AuthorizeWebView : UIView <UIWebViewDelegate> 
 {
     UIView *panelView;
     UIView *containerView;
@@ -34,15 +34,20 @@
     
     UIInterfaceOrientation previousOrientation;
     
-    id<WBAuthorizeWebViewDelegate> delegate;
+    id<OAuth2AuthorizeWebViewDelegate> delegate;
+    UIButton* closeBtn;
 }
 
-@property (nonatomic, assign) id<WBAuthorizeWebViewDelegate> delegate;
-
+@property (nonatomic, assign) id<OAuth2AuthorizeWebViewDelegate> delegate;
+@property (assign, nonatomic) int type;
 - (void)loadRequestWithURL:(NSURL *)url;
 
 - (void)show:(BOOL)animated;
 
 - (void)hide:(BOOL)animated;
+
+- (BOOL)sinaHandleURLChange:(NSURL*)url;
+- (BOOL)renrenHandleURLChange:(NSURL*)url;
+
 
 @end
