@@ -7,13 +7,34 @@
 //
 
 #import "OAAppDelegate.h"
-
+//#import <>
+//#import "NXOAuth2.h"
+#import "NXOAuth2.h"
 #import "OAViewController.h"
 
 @implementation OAAppDelegate
 
 @synthesize window = _window;
 @synthesize viewController = _viewController;
+
+
++ (void)initialize;
+{
+    [[NXOAuth2AccountStore sharedStore] setClientID:@"609011242"
+                                             secret:@"f5b209105c1735f86cc7324fed6873b5"
+                                   authorizationURL:[NSURL URLWithString:@"https://api.weibo.com/oauth2/authorize?display=mobile"]
+                                           tokenURL:[NSURL URLWithString:@"https://api.weibo.com/oauth2/access_token"]
+                                        redirectURL:[NSURL URLWithString:@"app://test.com"]
+                                     forAccountType:@"myFancyService"];
+    
+    
+    [[NXOAuth2AccountStore sharedStore] setClientID:@"f74f74797e644ee49e35f407092f6ec5"
+                                             secret:@"15e6644eec424855acd99ce9a551c0da"
+                                   authorizationURL:[NSURL URLWithString:@"https://graph.renren.com/oauth/authorize?response_type=token&display=touch"]
+                                           tokenURL:[NSURL URLWithString:@"https://graph.renren.com/oauth/token"]
+                                        redirectURL:[NSURL URLWithString:@"http://graph.renren.com/oauth/login_success.html"]
+                                     forAccountType:@"renren"];
+}
 
 - (void)dealloc
 {
@@ -29,6 +50,7 @@
     self.viewController = [[[OAViewController alloc] initWithNibName:@"OAViewController" bundle:nil] autorelease];
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
+    
     return YES;
 }
 
