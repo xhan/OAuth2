@@ -17,7 +17,7 @@ typedef enum{
 
 #import "PLHttpClient.h"
 
-@interface OAEngine : NSObject<OAuth2AuthorizeWebViewDelegate,PLHttpClientDelegate>
+@interface OAEngine : NSObject<OAuth2AuthorizeWebViewDelegate>
 {
     OA2AccessToken *tokenSina, *tokenRenRen;
     PLHttpClient*client;
@@ -31,4 +31,5 @@ typedef enum{
 
 @property(retain,nonatomic) OA2AccessToken*tokenSina;
 @property(retain,nonatomic) OA2AccessToken*tokenRenRen;
+
 @end

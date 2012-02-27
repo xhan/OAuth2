@@ -21,7 +21,9 @@
 #define kOASinaRedirect @"app://test.com"
 
 // renren buildin
-#define kOARRAuthURL @"https://graph.renren.com/oauth/authorize?response_type=token&display=touch"
+#define kOARRAuthURL @"https://graph.renren.com/oauth/authorize?display=touch"
+//touch
+//response_type=token&
 #define kOARRTokenURL @"https://graph.renren.com/oauth/token"
 #define kOARRRedirect @"http://graph.renren.com/oauth/login_success.html"
 
@@ -35,10 +37,15 @@
 
 @interface OAEngine(/*Private*/)
 - (NSURL*)requestURL:(OAProvider)provider;
-- (BOOL)handleSinaResponse:(NSData*)data;
-- (BOOL)handleRenRenResponse:(NSURL*)url;
+//- (BOOL)handleSinaResponse:(NSData*)data;
+//- (BOOL)handleRenRenResponse:(NSURL*)url;
 
-- (void)requestToken:(OAProvider)provider code:(NSString*)code;
+//- (void)requestToken:(OAProvider)provider code:(NSString*)code;
++ (NSDictionary *)parseURLParams:(NSString *)query;
+
+
+//return YES if found token in url
+- (BOOL)handleTokenURL:(OAProvider)provider url:(NSURL*)url;
 @end
 
 
@@ -104,8 +111,39 @@
     [view release];
 }
 
-#pragma mark - delegate
+- (BOOL)handleTokenURL:(OAProvider)provider url:(NSURL*)url
+{
+    //app://test.com#access_token=2.00kXyBoB0yd2Nf6412fc65e6tDDJgC&expires_in=86400&remind_in=75265&uid=1655420692
+    
+    /*
+     http://graph.renren.com/oauth/login_success.html#access_token=180804%7C6.bc641538f1992e2c1b56e98ccbe5ba2f.2592000.1332921600-200218453&expires_in=2595468&scope=read_user_album+status_update+photo_upload+publish_feed+create_album+operate_like
+     */
 
+    NSDictionary* params = [[self class] parseURLParams:[url fragment]];
+    NSString* token = [params objectForKey:@"access_token"];
+    int expired= [[params objectForKey:@"expires_in"] intValue];
+    
+    if ([token isNonEmpty] && expired) {
+        OA2AccessToken* accessToken = [[OA2AccessToken alloc] initWithAccessToken:token
+                                                                refreshToken:nil
+                                                             expiresDuration:expired
+                                                                       scope:nil];
+        if (provider == OAProviderSina) {
+            self.tokenSina = accessToken;
+            [self.tokenSina storeInDefaultKeychainWithServiceProviderName:ProviderNameSina];
+        }else if(provider == OAProviderRenRen){
+            self.tokenRenRen = accessToken;
+            [self.tokenRenRen storeInDefaultKeychainWithServiceProviderName:ProviderNameRenRen];
+        }
+        return YES;
+    }else {
+        return NO;
+    }
+
+}
+
+#pragma mark - delegate
+/*
 - (void)authorizeWebView:(OA2AuthorizeWebView *)webView didReceiveAuthorizeCode:(NSString *)code
 {
     //don't have cancel action
@@ -113,25 +151,70 @@
     // just for sina now...
     [self requestToken:type code:code];
 }
+*/
 
+- (BOOL)authorizeWebView:(OA2AuthorizeWebView *)webView shouldHandleURL:(NSURL*)url
+{
+    // app://test.com#error_uri=%2Foauth2%2Fauthorize&error=access_denied&error_description=user%20denied%20your%20request.&error_code=21330
+    // http ://graph.renren.com/oauth/login_success.html#error=login_denied&error_description=The+end-user+denied+logon.
+    
+    
+    // user cancel handle
+    BOOL canceled = NO;
+    if (type == OAProviderSina) {
+        canceled = [url.absoluteString rangeOfString:@"error_code=21330"].location != NSNotFound;
+    }else if (type == OAProviderRenRen) {
+        canceled = [url.absoluteString rangeOfString:@"error=login_denied"].location != NSNotFound;
+    }
+    if (canceled) {
+        [webView hide:YES];
+        return NO;
+    }
+    
+    // check if got token in url
+    BOOL isTokenGoted = [self handleTokenURL:type url:url];
+    if (isTokenGoted) {
+        NSLog(@"got token !!!!!!!");
+        [webView hide:YES];
+        //TODO: post notification or set delegate
+        return NO;
+    }else {
+        
+        return YES;
+    }
+    
+}
 
 
 
 #pragma mark - private
 
++ (NSDictionary *)parseURLParams:(NSString *)query
+{
+    NSArray *pairs = [query componentsSeparatedByString:@"&"];
+	NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+	for (NSString *pair in pairs) {
+		NSArray *kv = [pair componentsSeparatedByString:@"="];
+        if (kv.count == 2) {
+            NSString *val =[[kv objectAtIndex:1] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            [params setObject:val forKey:[kv objectAtIndex:0]];
+        }
+	}
+    return [params autorelease];
+}
+
 - (NSURL*)requestURL:(OAProvider)provider
 {
     if (provider == OAProviderSina) {
-        NSDictionary*dict = @{@"response_type":@"code",
+        //code | token
+        NSDictionary*dict = @{@"response_type":@"token",
                               @"redirect_uri":kOASinaRedirect,
                               @"client_id":kOASinaKey
                             };
         NSURL* url = URL(kOASinaAuthURL);
         return [url urlByaddingParamsDict:dict];
     }else if (provider == OAProviderRenRen){
-        /*
-        http://graph.renren.com/oauth/authorize?display=touch&response_type=token&redirect_uri=http%3A%2F%2Fwidget.renren.com%2Fcallback.html&ua=18da8a1a68e2ee89805959b6c8441864&client_id=f74f74797e644ee49e35f407092f6ec5
-         */
+
         NSDictionary*dict = @{@"response_type":@"token",
         @"redirect_uri":kOARRRedirect,
         @"client_id":kOARRKey
@@ -143,6 +226,7 @@
     }
 }
 
+/*
 - (BOOL)handleSinaResponse:(NSData*)data
 {
     OA2AccessToken*token = [OA2AccessToken tokenFromSinaResponse:data];
@@ -181,6 +265,9 @@
     }
 }
 
+ */
+
+/*
 #pragma mark - http delegate
 
 - (void)httpClient:(PLHttpClient *)hc failed:(NSError *)error
@@ -200,6 +287,6 @@
         NSLog(@"got !!!!!!!");
     }
 }
-
+*/
 
 @end

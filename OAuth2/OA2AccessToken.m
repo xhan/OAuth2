@@ -7,7 +7,7 @@
 //
 
 #import "OA2AccessToken.h"
-#import "JSONKit.h"
+//#import "JSONKit.h"
 
 @implementation OA2AccessToken
 @synthesize scope,expiresAt,accessToken,refreshToken, otherInfo;
@@ -66,6 +66,7 @@
 	return self;
 }
 
+/*
 + (OA2AccessToken*)tokenFromSinaResponse:(NSData*)data
 {
 //    NSString* contents = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
@@ -91,6 +92,7 @@
 {
     return nil;
 }
+ */
 
 #pragma mark storage
 
@@ -115,8 +117,14 @@
 		NSAssert1(status == errSecItemNotFound, @"unexpected error while fetching token from keychain: %d", status);
 		return nil;
 	}
-	
-	return [NSKeyedUnarchiver unarchiveObjectWithData:[result objectForKey:(NSString *)kSecAttrGeneric]];
+    id obj = nil;
+	@try {
+        obj = [NSKeyedUnarchiver unarchiveObjectWithData:[result objectForKey:(NSString *)kSecAttrGeneric]];
+    }
+    @catch (NSException *exception) {
+        //something wrong here, might caused by changed class name. oops
+    }
+	return obj;
 }
 - (void)storeInDefaultKeychainWithServiceProviderName:(NSString *)provider
 {

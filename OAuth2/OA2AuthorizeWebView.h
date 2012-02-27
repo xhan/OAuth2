@@ -22,7 +22,7 @@
 @protocol OAuth2AuthorizeWebViewDelegate <NSObject>
 
 - (void)authorizeWebView:(OA2AuthorizeWebView *)webView didReceiveAuthorizeCode:(NSString *)code;
-
+- (BOOL)authorizeWebView:(OA2AuthorizeWebView *)webView shouldHandleURL:(NSURL*)url;
 @end
 
 @interface OA2AuthorizeWebView : UIView <UIWebViewDelegate> 

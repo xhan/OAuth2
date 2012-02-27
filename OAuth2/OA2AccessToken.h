@@ -20,8 +20,8 @@
 
 - (id)initWithAccessToken:(NSString *)accessToken refreshToken:(NSString *)refreshToken expiresDuration:(int)duration scope:(NSSet *)scope;
 
-+ (OA2AccessToken*)tokenFromSinaResponse:(NSData*)data;
-+ (OA2AccessToken*)tokenFromRenrenResponse:(NSURL*)url;
+//+ (OA2AccessToken*)tokenFromSinaResponse:(NSData*)data;
+//+ (OA2AccessToken*)tokenFromRenrenResponse:(NSURL*)url;
 
 #pragma mark storage
 + (id)tokenFromDefaultKeychainWithServiceProviderName:(NSString *)provider;

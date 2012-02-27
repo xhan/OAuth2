@@ -93,6 +93,8 @@
 
 - (void)dealloc
 {
+    webView.delegate = nil;
+    [webView stopLoading];
     [panelView release], panelView = nil;
     [containerView release], containerView = nil;
     [webView release], webView = nil;
@@ -331,19 +333,18 @@
 - (BOOL)webView:(UIWebView *)aWebView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
     NSLog(@"%@",request.URL.absoluteString);
-
-    if (type == OAuthProviderSina) {
-        return [self sinaHandleURLChange:request.URL];
-    }else if ( type == OAuthProviderRenRen)
-    {
-        return [self renrenHandleURLChange:request.URL];
+    if ([delegate respondsToSelector:@selector(authorizeWebView:shouldHandleURL:)]) {
+        return [delegate authorizeWebView:self shouldHandleURL:request.URL];
+    }else {
+        return YES;
     }
-    return YES;
+    
 }
                          
-
+/*
 - (BOOL)sinaHandleURLChange:(NSURL*)url
 {
+
     NSRange range = [url.absoluteString rangeOfString:@"code="];
     
     if (range.location != NSNotFound)
@@ -360,12 +361,19 @@
         return NO;
     }
     return YES;
-    
+
     
 }
 - (BOOL)renrenHandleURLChange:(NSURL*)url
 {
-    return NO;
+//    return NO;
+//    return YES;
+    
+
+    NSString* absolute = [url absoluteString];
+    NSRange rangeToken, rangeExpire;
+    
+    
 }
-                         
+*/                         
 @end
