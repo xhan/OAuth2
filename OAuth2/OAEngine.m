@@ -111,6 +111,18 @@
     [view release];
 }
 
+- (void)logout:(OAProvider)provider
+{
+    if (provider == OAProviderSina) {
+        [self.tokenSina removeFromDefaultKeychainWithServiceProviderName:ProviderNameSina];
+        self.tokenSina = nil;
+    }else if (provider == OAProviderRenRen ) {
+        [self.tokenRenRen removeFromDefaultKeychainWithServiceProviderName:ProviderNameRenRen];
+        self.tokenRenRen = nil;
+    }
+    
+}
+
 - (BOOL)handleTokenURL:(OAProvider)provider url:(NSURL*)url
 {
     //app://test.com#access_token=2.00kXyBoB0yd2Nf6412fc65e6tDDJgC&expires_in=86400&remind_in=75265&uid=1655420692
@@ -174,12 +186,11 @@
     // check if got token in url
     BOOL isTokenGoted = [self handleTokenURL:type url:url];
     if (isTokenGoted) {
-        NSLog(@"got token !!!!!!!");
+//        NSLog(@"got token !!!!!!!");
         [webView hide:YES];
         //TODO: post notification or set delegate
         return NO;
-    }else {
-        
+    }else {        
         return YES;
     }
     

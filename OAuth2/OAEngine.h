@@ -25,7 +25,7 @@ typedef enum{
 }
 - (BOOL)isLogined:(OAProvider)provider;
 - (BOOL)isValid:(OAProvider)provider;
-
+- (void)logout:(OAProvider)provider;
 - (void)authorizedSina;
 - (void)authorizedRenren;
 

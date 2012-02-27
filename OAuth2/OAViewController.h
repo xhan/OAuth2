@@ -13,4 +13,6 @@
 //- (void)handleCode:(NSString*)code;
 - (IBAction)onSina:(id)sender;
 - (IBAction)onRenren:(id)sender;
+- (IBAction)onWeiboPost:(id)sender;
+- (IBAction)onPostRR:(id)sender;
 @end
