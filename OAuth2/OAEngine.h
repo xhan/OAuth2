@@ -12,7 +12,8 @@
 
 typedef enum{
     OAProviderSina,
-    OAProviderRenRen
+    OAProviderRenRen,
+    OAProviderQQ
 }OAProvider;
 
 #import "PLHttpClient.h"
