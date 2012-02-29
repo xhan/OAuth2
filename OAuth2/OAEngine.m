@@ -50,7 +50,7 @@
 
 
 @implementation OAEngine
-
+@synthesize tokenSina, tokenRenRen;
 - (id)init
 {
     self = [super init];
@@ -218,18 +218,27 @@
 {
     if (provider == OAProviderSina) {
         //code | token
+        /*
         NSDictionary*dict = @{@"response_type":@"token",
                               @"redirect_uri":kOASinaRedirect,
                               @"client_id":kOASinaKey
                             };
+         */
+        NSDictionary*dict = PLDict(@"token",@"response_type",
+                                   kOASinaRedirect,@"redirect_uri",
+                                   kOASinaKey, @"client_id");
         NSURL* url = URL(kOASinaAuthURL);
         return [url urlByaddingParamsDict:dict];
     }else if (provider == OAProviderRenRen){
-
+        /*
         NSDictionary*dict = @{@"response_type":@"token",
         @"redirect_uri":kOARRRedirect,
         @"client_id":kOARRKey
         };
+         */
+        NSDictionary*dict = PLDict(@"token",@"response_type",
+                                   kOARRRedirect,@"redirect_uri",
+                                   kOARRKey,@"client_id");
         NSURL* url = URL(kOARRAuthURL);
         return [url urlByaddingParamsDict:dict];
     }else {        

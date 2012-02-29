@@ -74,8 +74,8 @@
         
         
         // close button
-        UIButton* btn = [T createBtnfromFrame:ccr(0, 0, 32, 32)
-                                     imageStr:@"close.png"
+        UIButton* btn = [T createBtnfromFrame:ccr(0, 0, 34, 34)
+                                     imageStr:@"webview_close.png"
                               highlightImgStr:nil
                                        target:self
                                      selector:@selector(onCloseButtonTouched:)];

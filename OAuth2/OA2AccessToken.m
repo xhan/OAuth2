@@ -7,7 +7,6 @@
 //
 
 #import "OA2AccessToken.h"
-//#import "JSONKit.h"
 
 @implementation OA2AccessToken
 @synthesize scope,expiresAt,accessToken,refreshToken, otherInfo;

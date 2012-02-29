@@ -20,7 +20,7 @@
 @class OA2AuthorizeWebView;
 
 @protocol OAuth2AuthorizeWebViewDelegate <NSObject>
-
+@optional
 - (void)authorizeWebView:(OA2AuthorizeWebView *)webView didReceiveAuthorizeCode:(NSString *)code;
 - (BOOL)authorizeWebView:(OA2AuthorizeWebView *)webView shouldHandleURL:(NSURL*)url;
 @end
@@ -46,8 +46,8 @@
 
 - (void)hide:(BOOL)animated;
 
-- (BOOL)sinaHandleURLChange:(NSURL*)url;
-- (BOOL)renrenHandleURLChange:(NSURL*)url;
+//- (BOOL)sinaHandleURLChange:(NSURL*)url;
+//- (BOOL)renrenHandleURLChange:(NSURL*)url;
 
 
 @end
