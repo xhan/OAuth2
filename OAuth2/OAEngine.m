@@ -30,7 +30,7 @@
 
 //#error "Define key first"
 //#if defined (kOA2SinaKey) && defined (kOA2SinaSecret)
- 
+#define OAEngineNotify @"OAEngineNotify" 
 
 #define ProviderNameSina @"sina"
 #define ProviderNameRenRen @"renren"
@@ -120,7 +120,7 @@
         [self.tokenRenRen removeFromDefaultKeychainWithServiceProviderName:ProviderNameRenRen];
         self.tokenRenRen = nil;
     }
-    
+    [self postNotify:provider success:NO];
 }
 
 - (BOOL)handleTokenURL:(OAProvider)provider url:(NSURL*)url
@@ -188,9 +188,10 @@
     if (isTokenGoted) {
 //        NSLog(@"got token !!!!!!!");
         [webView hide:YES];
-        //TODO: post notification or set delegate
+        [self postNotify:type success:YES];
         return NO;
     }else {        
+        [self postNotify:type success:NO];
         return YES;
     }
     
@@ -309,4 +310,39 @@
 }
 */
 
+
++ (void)addNotify:(id)target sel:(SEL)selector
+{
+    [[NSNotificationCenter defaultCenter] 
+     addObserver:target
+     selector:selector
+     name:OAEngineNotify
+     object:nil];
+}
++ (void)rmNotify:(id)target
+{
+    [[NSNotificationCenter defaultCenter] 
+     removeObserver:target
+     name:OAEngineNotify
+     object:nil];         
+}
+
++ (void)handleNotifyInfo:(NSDictionary*)info
+                  result:(void (^)(OAProvider,BOOL))result
+{
+    int provider = [[info objectForKey:@"p"] intValue];
+    BOOL success = [[info objectForKey:@"ret"] boolValue]; 
+    if (result) {
+        result(provider,success);
+    }
+    
+}
+
+- (void)postNotify:(OAProvider)provider success:(BOOL)success
+{
+    [[NSNotificationCenter defaultCenter] 
+     postNotificationName:OAEngineNotify 
+     object:self
+     userInfo:PLDict(NUM(provider),@"p",NUM(success),@"ret")];
+}
 @end

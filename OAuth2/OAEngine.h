@@ -11,9 +11,9 @@
 #import "OA2AuthorizeWebView.h"
 
 typedef enum{
-    OAProviderSina,
-    OAProviderRenRen,
-    OAProviderQQ
+    OAProviderSina =0,
+    OAProviderRenRen=1,
+    OAProviderQQ=2
 }OAProvider;
 
 #import "PLHttpClient.h"
@@ -33,4 +33,9 @@ typedef enum{
 @property(retain,nonatomic) OA2AccessToken*tokenSina;
 @property(retain,nonatomic) OA2AccessToken*tokenRenRen;
 
++ (void)addNotify:(id)target sel:(SEL)selector;
++ (void)rmNotify:(id)target;
++ (void)handleNotifyInfo:(NSDictionary*)info
+                  result:(void (^)(OAProvider,BOOL))result;
+- (void)postNotify:(OAProvider)provider success:(BOOL)success;
 @end
