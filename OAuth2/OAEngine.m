@@ -136,6 +136,7 @@
     int expired= [[params objectForKey:@"expires_in"] intValue];
     
     if ([token isNonEmpty] && expired) {
+        PLOG(@"token(exp:%d) %@",expired,token);
         OA2AccessToken* accessToken = [[OA2AccessToken alloc] initWithAccessToken:token
                                                                 refreshToken:nil
                                                              expiresDuration:expired
