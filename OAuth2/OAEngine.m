@@ -9,11 +9,15 @@
 #import "OAEngine.h"
 #import "JSONKit.h"
 
+
 #define kOASinaKey @"609011242"
 #define kOASinaSecret @"f5b209105c1735f86cc7324fed6873b5"
 
 #define kOARRKey   @"f74f74797e644ee49e35f407092f6ec5"
 #define kOARRSecret @"15e6644eec424855acd99ce9a551c0da"
+
+#define kOAQQKey    @"100251437"
+#define kOAQQSecret @"ada372076fe479eb3c874759f66e342c"
 
 // sina buildin
 #define kOASinaAuthURL @"https://api.weibo.com/oauth2/authorize?display=mobile"
@@ -27,13 +31,21 @@
 #define kOARRTokenURL @"https://graph.renren.com/oauth/token"
 #define kOARRRedirect @"http://graph.renren.com/oauth/login_success.html"
 
+// qq buildin
+#define kOAQQAuthURL @"https://graph.qq.com/oauth2.0/authorize?display=mobile"
+#define kOAQQRedirect @"http://com.qsbk.app"
 
 //#error "Define key first"
 //#if defined (kOA2SinaKey) && defined (kOA2SinaSecret)
 #define OAEngineNotify @"OAEngineNotify" 
 
-#define ProviderNameSina @"sina"
-#define ProviderNameRenRen @"renren"
+
+
+#import "Settings.h"
+
+#define ProviderNameSina NSStringADD(@"sina",AppSettings().userID)
+#define ProviderNameRenRen NSStringADD(@"renren",AppSettings().userID)
+#define ProviderNameQQ  NSStringADD(@"oauth2-qq",AppSettings().userID)
 
 @interface OAEngine(/*Private*/)
 - (NSURL*)requestURL:(OAProvider)provider;
@@ -50,19 +62,28 @@
 
 
 @implementation OAEngine
-@synthesize tokenSina, tokenRenRen;
+@synthesize tokenSina, tokenRenRen, tokenQQ;
 - (id)init
-{
+{    
     self = [super init];
     if (self) {
-        self.tokenSina = [OA2AccessToken tokenFromDefaultKeychainWithServiceProviderName:ProviderNameSina];
-        self.tokenRenRen = [OA2AccessToken tokenFromDefaultKeychainWithServiceProviderName:ProviderNameRenRen];
+        [self reloadTokens];
     }
     return self;
 }
 
+- (void)reloadTokens
+{
+    self.tokenSina   = [OA2AccessToken tokenFromDefaultKeychainWithServiceProviderName:ProviderNameSina];
+    self.tokenRenRen = [OA2AccessToken tokenFromDefaultKeychainWithServiceProviderName:ProviderNameRenRen];
+    self.tokenQQ     = [OA2AccessToken tokenFromDefaultKeychainWithServiceProviderName:ProviderNameQQ];
+}
+
 - (void)dealloc
 {
+    PLSafeRelease(tokenQQ);
+    PLSafeRelease(tokenRenRen);
+    PLSafeRelease(tokenSina);
     PLSafeRelease(client);
     [super dealloc];
 }
@@ -73,7 +94,9 @@
         return !!self.tokenSina;
     }else if (provider == OAProviderRenRen) {
         return !!self.tokenRenRen;
-    }else {
+    }else if (provider == OAProviderQQ) {
+        return !!self.tokenQQ;
+    }else{
         return NO;
     }
     
@@ -84,31 +107,40 @@
         return self.tokenSina && !self.tokenSina.isExpired;
     }else if (provider == OAProviderRenRen) {
         return self.tokenRenRen && !self.tokenRenRen.isExpired;
+    }else if (provider == OAProviderQQ) {
+        return self.tokenQQ && !self.tokenQQ.isExpired;
     }else {
         return NO;
     }
     
 }
 
-- (void)authorizedSina
+
+- (void)authorize:(OAProvider)provider
 {
-    type = OAProviderSina;
+    type =  provider;
     OA2AuthorizeWebView*view = [[OA2AuthorizeWebView alloc] init];
-    view.type = OAProviderSina;
+    view.type = provider;
     view.delegate = self;
-    [view loadRequestWithURL:[self requestURL:OAProviderSina]];
+    [view loadRequestWithURL:[self requestURL:provider]];
     [view show:YES];
     [view release];
 }
+
+- (void)authorizedSina
+{
+    [self authorize:OAProviderSina];
+}
+
+
 - (void)authorizedRenren
 {
-    type = OAProviderRenRen;
-    OA2AuthorizeWebView*view = [[OA2AuthorizeWebView alloc] init];
-    view.type = OAProviderRenRen;
-    view.delegate = self;
-    [view loadRequestWithURL:[self requestURL:OAProviderRenRen]];
-    [view show:YES];
-    [view release];
+    [self authorize:OAProviderRenRen];
+}
+
+- (void)authorizedQQ
+{
+    [self authorize:OAProviderQQ];
 }
 
 - (void)logout:(OAProvider)provider
@@ -119,6 +151,9 @@
     }else if (provider == OAProviderRenRen ) {
         [self.tokenRenRen removeFromDefaultKeychainWithServiceProviderName:ProviderNameRenRen];
         self.tokenRenRen = nil;
+    }else if (provider == OAProviderQQ) {
+        [self.tokenQQ removeFromDefaultKeychainWithServiceProviderName:ProviderNameQQ];
+        self.tokenQQ = nil;
     }
     [self postNotify:provider success:NO];
 }
@@ -147,7 +182,11 @@
         }else if(provider == OAProviderRenRen){
             self.tokenRenRen = accessToken;
             [self.tokenRenRen storeInDefaultKeychainWithServiceProviderName:ProviderNameRenRen];
+        }else if (provider == OAProviderQQ){
+            self.tokenQQ = accessToken;
+            [self.tokenQQ storeInDefaultKeychainWithServiceProviderName:ProviderNameQQ];
         }
+        [accessToken release];
         return YES;
     }else {
         return NO;
@@ -242,6 +281,13 @@
                                    kOARRRedirect,@"redirect_uri",
                                    kOARRKey,@"client_id");
         NSURL* url = URL(kOARRAuthURL);
+        return [url urlByaddingParamsDict:dict];
+    }else if(provider == OAProviderQQ) {
+        NSDictionary*dict = PLDict(@"token",@"response_type",
+                                   kOAQQRedirect,@"redirect_uri",
+                                   kOAQQKey,@"client_id",
+                                   @"add_topic,get_user_info,add_share,add_t,add_pic_t",@"scope");
+        NSURL* url = URL(kOAQQAuthURL);
         return [url urlByaddingParamsDict:dict];
     }else {        
         return nil;

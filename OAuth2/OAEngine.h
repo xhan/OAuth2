@@ -11,16 +11,16 @@
 #import "OA2AuthorizeWebView.h"
 
 typedef enum{
-    OAProviderSina =0,
-    OAProviderRenRen=1,
-    OAProviderQQ=2
+    OAProviderQQ = 0,
+    OAProviderSina = 1,
+    OAProviderRenRen = 2    
 }OAProvider;
 
 #import "PLHttpClient.h"
 
 @interface OAEngine : NSObject<OAuth2AuthorizeWebViewDelegate>
 {
-    OA2AccessToken *tokenSina, *tokenRenRen;
+    OA2AccessToken *tokenSina, *tokenRenRen, *tokenQQ;
     PLHttpClient*client;
     int type;   //current action type;
 }
@@ -29,9 +29,13 @@ typedef enum{
 - (void)logout:(OAProvider)provider;
 - (void)authorizedSina;
 - (void)authorizedRenren;
+- (void)authorizedQQ;
+- (void)authorize:(OAProvider)provider;
+- (void)reloadTokens;
 
 @property(retain,nonatomic) OA2AccessToken*tokenSina;
 @property(retain,nonatomic) OA2AccessToken*tokenRenRen;
+@property(retain,nonatomic) OA2AccessToken*tokenQQ;
 
 + (void)addNotify:(id)target sel:(SEL)selector;
 + (void)rmNotify:(id)target;
