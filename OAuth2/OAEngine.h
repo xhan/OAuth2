@@ -42,4 +42,8 @@ typedef enum{
 + (void)handleNotifyInfo:(NSDictionary*)info
                   result:(void (^)(OAProvider,BOOL))result;
 - (void)postNotify:(OAProvider)provider success:(BOOL)success;
+
+
+- (BOOL)handleOpenURL:(NSURL*)url;
+
 @end

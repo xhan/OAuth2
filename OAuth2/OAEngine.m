@@ -10,6 +10,8 @@
 #import "JSONKit.h"
 
 
+#define kSSOCallBackURL @"ugx-qb"
+
 #define kOASinaKey @"609011242"
 #define kOASinaSecret @"f5b209105c1735f86cc7324fed6873b5"
 
@@ -49,12 +51,8 @@
 
 @interface OAEngine(/*Private*/)
 - (NSURL*)requestURL:(OAProvider)provider;
-//- (BOOL)handleSinaResponse:(NSData*)data;
-//- (BOOL)handleRenRenResponse:(NSURL*)url;
 
 //- (void)requestToken:(OAProvider)provider code:(NSString*)code;
-+ (NSDictionary *)parseURLParams:(NSString *)query;
-
 
 //return YES if found token in url
 - (BOOL)handleTokenURL:(OAProvider)provider url:(NSURL*)url;
@@ -129,7 +127,29 @@
 
 - (void)authorizedSina
 {
-    [self authorize:OAProviderSina];
+#define kSinaWeiboAppAuthURL_iPhone        @"sinaweibosso://login"
+#define kSinaWeiboAppAuthURL_iPad          @"sinaweibohdsso://login"
+    
+    BOOL ssoLogined = NO;
+    NSDictionary*params = @{
+    @"redirect_uri":kOASinaRedirect,
+    @"client_id":kOASinaKey,
+    @"callback_uri":kSSOCallBackURL
+    };
+    //ipad
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        NSURL*url = [URL(kSinaWeiboAppAuthURL_iPad) urlByaddingParamsDict:params];
+        ssoLogined = [[UIApplication sharedApplication] openURL:url];
+    }
+    //iphone
+    if (!ssoLogined) {
+        NSURL*url = [URL(kSinaWeiboAppAuthURL_iPhone) urlByaddingParamsDict:params];
+        ssoLogined = [[UIApplication sharedApplication] openURL:url];
+    }
+    //web
+    if(!ssoLogined)
+        [self authorize:OAProviderSina];
 }
 
 
@@ -166,16 +186,24 @@
      http://graph.renren.com/oauth/login_success.html#access_token=180804%7C6.bc641538f1992e2c1b56e98ccbe5ba2f.2592000.1332921600-200218453&expires_in=2595468&scope=read_user_album+status_update+photo_upload+publish_feed+create_album+operate_like
      */
 
-    NSDictionary* params = [[self class] parseURLParams:[url fragment]];
+    NSDictionary* params = [NSURL parseURLParams:[url fragment]];
+    return [self handleTokenDict:provider dict:params];
+    
+
+
+}
+
+- (BOOL)handleTokenDict:(OAProvider)provider dict:(NSDictionary*)params
+{
     NSString* token = [params objectForKey:@"access_token"];
     int expired= [[params objectForKey:@"expires_in"] intValue];
     
     if ([token isNonEmpty] && expired) {
         PLOG(@"token(exp:%d) %@",expired,token);
         OA2AccessToken* accessToken = [[OA2AccessToken alloc] initWithAccessToken:token
-                                                                refreshToken:nil
-                                                             expiresDuration:expired
-                                                                       scope:nil];
+                                                                     refreshToken:nil
+                                                                  expiresDuration:expired
+                                                                            scope:nil];
         if (provider == OAProviderSina) {
             self.tokenSina = accessToken;
             [self.tokenSina storeInDefaultKeychainWithServiceProviderName:ProviderNameSina];
@@ -191,19 +219,10 @@
     }else {
         return NO;
     }
-
 }
 
 #pragma mark - delegate
-/*
-- (void)authorizeWebView:(OA2AuthorizeWebView *)webView didReceiveAuthorizeCode:(NSString *)code
-{
-    //don't have cancel action
-    NSLog(@"%@",code);
-    // just for sina now...
-    [self requestToken:type code:code];
-}
-*/
+
 
 - (BOOL)authorizeWebView:(OA2AuthorizeWebView *)webView shouldHandleURL:(NSURL*)url
 {
@@ -241,19 +260,7 @@
 
 #pragma mark - private
 
-+ (NSDictionary *)parseURLParams:(NSString *)query
-{
-    NSArray *pairs = [query componentsSeparatedByString:@"&"];
-	NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-	for (NSString *pair in pairs) {
-		NSArray *kv = [pair componentsSeparatedByString:@"="];
-        if (kv.count == 2) {
-            NSString *val =[[kv objectAtIndex:1] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-            [params setObject:val forKey:[kv objectAtIndex:0]];
-        }
-	}
-    return [params autorelease];
-}
+
 
 - (NSURL*)requestURL:(OAProvider)provider
 {
@@ -294,46 +301,7 @@
     }
 }
 
-/*
-- (BOOL)handleSinaResponse:(NSData*)data
-{
-    OA2AccessToken*token = [OA2AccessToken tokenFromSinaResponse:data];
-    if (token) {
-        self.tokenSina = token;
-        [self.tokenSina storeInDefaultKeychainWithServiceProviderName:ProviderNameSina];
-    }
-    return !!token;
-}
 
-- (BOOL)handleRenRenResponse:(NSURL*)url
-{
-    return NO;
-}
-
-
-- (void)requestToken:(OAProvider)provider code:(NSString*)code
-{
-    if (!client) {
-        client = [[PLHttpClient alloc] init];
-        client.delegate = self;
-    }
-    [client cancel];
-    if (provider == OAProviderSina) {
-        NSDictionary*params = [NSDictionary dictionaryWithObjectsAndKeys:kOASinaKey,@"client_id",
-                               kOASinaSecret,@"client_secret",
-                               @"authorization_code", @"grant_type",
-                               kOASinaRedirect,@"redirect_uri",
-                               code, @"code",nil];
-                            
-        NSURL* url = URL(kOASinaTokenURL);
-        [client post:url
-                body:[PLHttpClient paramsFromDict:params]];
-    }else if(provider == OAProviderRenRen){
-        NSLog(@"not finished");
-    }
-}
-
- */
 
 /*
 #pragma mark - http delegate
@@ -390,6 +358,36 @@
     [[NSNotificationCenter defaultCenter] 
      postNotificationName:OAEngineNotify 
      object:self
-     userInfo:PLDict(NUM(provider),@"p",NUM(success),@"ret")];
+     userInfo:@{@"p": @(provider),@"ret": @(success)}];
 }
+
+// sso support
+- (BOOL)handleOpenURL:(NSURL*)url
+{
+    //TODO: need a value to store last sso type (weibo,qq,or other)
+    if ([[url scheme] isEqualToString:kSSOCallBackURL]){
+        //weibo
+        BOOL ret = [self handleSSOWeiboURL:url];
+        if(ret) [self postNotify:OAProviderSina success:YES];
+        //other
+        // do nothing rightnow
+    }
+    
+    return YES;
+}
+
+- (BOOL)handleSSOWeiboURL:(NSURL*)url
+{
+    //ugx-qb://?remind_in=1326742&expires_in=1326742&uid=1655420692&access_token=2.00kXyBoB0yd2Nfbea97a782d0k5T85
+    
+    NSDictionary*params = [url params];
+
+//    NSString *uid =          [params objectForKey:@"uid"];
+    
+    //TODO: store uid
+    return [self handleTokenDict:OAProviderSina dict:params];
+
+}
+
+
 @end

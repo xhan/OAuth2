@@ -15,4 +15,7 @@
 - (IBAction)onRenren:(id)sender;
 - (IBAction)onWeiboPost:(id)sender;
 - (IBAction)onPostRR:(id)sender;
+- (IBAction)onQQ:(id)sender;
+- (IBAction)onQQPost:(id)sender;
+
 @end
