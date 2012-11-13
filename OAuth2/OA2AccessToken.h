@@ -15,13 +15,16 @@
 @property(copy,nonatomic) NSString*refreshToken;
 @property(retain,nonatomic) NSDate *expiresAt;
 @property(retain,nonatomic) NSSet*scope;
-@property(copy,nonatomic) NSString*otherInfo;
+//@property(copy,nonatomic) NSString*otherInfo;
 @property(readonly,nonatomic) BOOL isExpired;
 
-- (id)initWithAccessToken:(NSString *)accessToken refreshToken:(NSString *)refreshToken expiresDuration:(int)duration scope:(NSSet *)scope;
+@property(retain,nonatomic) NSMutableDictionary*info;  // remember to save info with archive-friendly object
+@property(copy,nonatomic)   NSString*provider;  // alias of the provider
 
-//+ (OA2AccessToken*)tokenFromSinaResponse:(NSData*)data;
-//+ (OA2AccessToken*)tokenFromRenrenResponse:(NSURL*)url;
+
+- (id)initWithAccessToken:(NSString *)accessToken refreshToken:(NSString *)refreshToken expiresDuration:(int)duration scope:(NSSet *)scope;
+- (void)save;
+
 
 #pragma mark storage
 + (id)tokenFromDefaultKeychainWithServiceProviderName:(NSString *)provider;
@@ -29,4 +32,7 @@
 - (void)removeFromDefaultKeychainWithServiceProviderName:(NSString *)provider;
 
 + (NSString *)serviceNameWithProvider:(NSString *)provider;
+
+
+- (void)addInfo:(NSObject*)obj forKey:(NSString*)key;
 @end

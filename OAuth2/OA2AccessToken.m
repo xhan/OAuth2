@@ -9,7 +9,7 @@
 #import "OA2AccessToken.h"
 
 @implementation OA2AccessToken
-@synthesize scope,expiresAt,accessToken,refreshToken, otherInfo;
+@synthesize scope,expiresAt,accessToken,refreshToken, info,provider=_provider;
 
 - (void)dealloc
 {
@@ -17,7 +17,9 @@
     PLSafeRelease(expiresAt);
     PLSafeRelease(accessToken);
     PLSafeRelease(refreshToken);
-    PLSafeRelease(otherInfo);
+//    PLSafeRelease(otherInfo);
+    PLSafeRelease(info);
+    PLSafeRelease(_provider);
     [super dealloc];
 }
 
@@ -49,7 +51,7 @@
 	[aCoder encodeObject:refreshToken forKey:@"refreshToken"];
 	[aCoder encodeObject:expiresAt forKey:@"expiresAt"];
     [aCoder encodeObject:scope forKey:@"scope"];
-    [aCoder encodeObject:otherInfo forKey:@"otherInfo"];
+    [aCoder encodeObject:info forKey:@"info"];
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder
@@ -60,40 +62,28 @@
 		refreshToken = [[aDecoder decodeObjectForKey:@"refreshToken"] copy];
 		expiresAt = [[aDecoder decodeObjectForKey:@"expiresAt"] copy];
         scope = [[aDecoder decodeObjectForKey:@"scope"] copy];
-        otherInfo = [[aDecoder decodeObjectForKey:@"otherInfo"] copy];
+        info = [[NSMutableDictionary alloc] initWithDictionary:[aDecoder decodeObjectForKey:@"info"]];
 	}
 	return self;
 }
 
-/*
-+ (OA2AccessToken*)tokenFromSinaResponse:(NSData*)data
+- (void)addInfo:(NSObject*)obj forKey:(NSString*)key
 {
-//    NSString* contents = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    
-//    {"access_token":"2.00kXyBoB0yd2Nfcdd789eb500c2gPb","expires_in":86400,"remind_in":"18251","uid":"1655420692"}
-    NSDictionary*dict = [data objectFromJSONData];
-    NSString* token = [dict objectForKey:@"access_token"];
-    int expired = [[dict objectForKey:@"expires_in"] intValue];
-    NSString* other = [dict objectForKey:@"uid"];
-    if (token && expired && other) {
-        OA2AccessToken* instance = [[OA2AccessToken alloc] initWithAccessToken:token
-                                                                     refreshToken:nil
-                                                                  expiresDuration:expired
-                                                                            scope:nil];
-        instance.otherInfo = other;
-        return [instance autorelease];
-    }else {
-        return nil;
+    if (!self.info) {
+        self.info = [NSMutableDictionary dictionary];
     }
-    
+    [self.info setObject:obj forKey:key];
 }
-+ (OA2AccessToken*)tokenFromRenrenResponse:(NSURL*)url
-{
-    return nil;
-}
- */
 
 #pragma mark storage
+
+- (void)save
+{
+    if (self.provider) {
+        [self removeFromDefaultKeychainWithServiceProviderName:self.provider];
+        [self storeInDefaultKeychainWithServiceProviderName:self.provider];
+    }
+}
 
 + (NSString *)serviceNameWithProvider:(NSString *)provider
 {
@@ -114,15 +104,18 @@
 		NSAssert1(status == errSecItemNotFound, @"unexpected error while fetching token from keychain: %ld", status);
 		return nil;
 	}
-    id obj = nil;
+    OA2AccessToken* obj = nil;
 	@try {
         obj = [NSKeyedUnarchiver unarchiveObjectWithData:[result objectForKey:(NSString *)kSecAttrGeneric]];
+        obj.provider = provider;
     }
     @catch (NSException *exception) {
         //something wrong here, might caused by changed class name. oops
     }
+    
 	return obj;
 }
+
 - (void)storeInDefaultKeychainWithServiceProviderName:(NSString *)provider
 {
     NSString *serviceName = [[self class] serviceNameWithProvider:provider];
