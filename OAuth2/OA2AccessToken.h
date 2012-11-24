@@ -20,7 +20,7 @@
 
 @property(retain,nonatomic) NSMutableDictionary*info;  // remember to save info with archive-friendly object
 @property(copy,nonatomic)   NSString*provider;  // alias of the provider
-
+@property(readonly) NSTimeInterval exipresAtUTC;
 
 - (id)initWithAccessToken:(NSString *)accessToken refreshToken:(NSString *)refreshToken expiresDuration:(int)duration scope:(NSSet *)scope;
 - (void)save;

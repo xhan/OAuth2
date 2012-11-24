@@ -43,6 +43,15 @@
     return self.expiresAt && [[NSDate date] earlierDate:self.expiresAt] == self.expiresAt;
 }
 
+- (NSTimeInterval)exipresAtUTC
+{
+    if (self.expiresAt) {
+        return [self.expiresAt timeIntervalSince1970];
+    }else{
+        return 0;
+    }
+}
+
 #pragma mark - NSCoding
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
