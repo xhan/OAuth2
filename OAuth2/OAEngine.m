@@ -26,7 +26,6 @@
 @interface OAEngine(/*Private*/)
 - (NSURL*)requestURL:(OAProvider)provider;
 
-//- (void)requestToken:(OAProvider)provider code:(NSString*)code;
 
 //return YES if found token in url
 - (BOOL)handleTokenURL:(OAProvider)provider url:(NSURL*)url;
@@ -195,8 +194,8 @@
 
 - (BOOL)handleTokenDict:(OAProvider)provider dict:(NSDictionary*)params
 {
-    NSString* token = [params objectForKey:@"access_token"];
-    int expired= [[params objectForKey:@"expires_in"] intValue];
+    NSString* token = params[@"access_token"];
+    int expired= [params[@"expires_in"] intValue];
     
     if ([token isNonEmpty] && expired) {
         PLOG(@"token(exp:%d) %@",expired,token);
@@ -207,7 +206,7 @@
         
         // insert sina uid in url
         if (provider == OAProviderSina) {
-            NSString *uid =          [params objectForKey:@"uid"];
+            NSString *uid =          params[@"uid"];
             if (uid) {
                 [accessToken addInfo:uid forKey:@"uid"];
             }
@@ -322,9 +321,9 @@
 + (void)handleNotifyInfo:(NSDictionary*)info
                   result:(void (^)(OAProvider,BOOL,id))result
 {
-    int provider = [[info objectForKey:@"p"] intValue];
-    BOOL success = [[info objectForKey:@"ret"] boolValue];
-    id accessToken = ((OAEngine*)info[@"self"]).tokenLatest;
+    int provider = [info[@"p"] intValue];
+    BOOL success = [info[@"ret"] boolValue];
+    id accessToken = ((OAEngine*)PLHashV(info, @"self")).tokenLatest;
     if (result) {
         result(provider,success, accessToken);
     }

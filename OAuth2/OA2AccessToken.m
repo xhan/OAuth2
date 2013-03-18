@@ -81,7 +81,7 @@
     if (!self.info) {
         self.info = [NSMutableDictionary dictionary];
     }
-    [self.info setObject:obj forKey:key];
+    (self.info)[key] = obj;
 }
 
 #pragma mark storage
@@ -115,7 +115,7 @@
 	}
     OA2AccessToken* obj = nil;
 	@try {
-        obj = [NSKeyedUnarchiver unarchiveObjectWithData:[result objectForKey:(NSString *)kSecAttrGeneric]];
+        obj = [NSKeyedUnarchiver unarchiveObjectWithData:result[(NSString *)kSecAttrGeneric]];
         obj.provider = provider;
     }
     @catch (NSException *exception) {

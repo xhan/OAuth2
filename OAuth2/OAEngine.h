@@ -24,7 +24,7 @@
 // sina buildin
 #define kOASinaAuthURL @"https://api.weibo.com/oauth2/authorize?display=mobile"
 #define kOASinaTokenURL @"https://api.weibo.com/oauth2/access_token"
-#define kOASinaRedirect @"app://test.com"
+#define kOASinaRedirect @"http://app.qiushibaike.com"
 
 // renren buildin
 #define kOARRAuthURL @"https://graph.renren.com/oauth/authorize?display=touch"

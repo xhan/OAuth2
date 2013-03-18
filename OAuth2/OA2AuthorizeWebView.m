@@ -13,7 +13,7 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 //  Copyright 2011 Sina. All rights reserved.
-//
+//   modified by xhan
 
 #import "OAEngine.h"
 #import "OA2AuthorizeWebView.h"
@@ -44,27 +44,27 @@
 
 - (id)init
 {
-    if (self = [super initWithFrame:CGRectMake(0, 0, 320, 480)])
+    if (self = [super initWithFrame:[UIScreen mainScreen].bounds])
     {
         // background settings
         [self setBackgroundColor:[UIColor clearColor]];
         [self setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
         
         // add the panel view
-        panelView = [[UIView alloc] initWithFrame:CGRectMake(10, 30, 300, 440)];
+        panelView = [[UIView alloc] initWithFrame:CGRectMake(5, 30, 310, 440)];
         [panelView setBackgroundColor:[UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.55]];
         [[panelView layer] setMasksToBounds:NO]; // very important
-        [[panelView layer] setCornerRadius:10.0];
+        [[panelView layer] setCornerRadius:5.0];
         [self addSubview:panelView];
         
         // add the conainer view
-        containerView = [[UIView alloc] initWithFrame:CGRectMake(10, 10, 280, 420)];
+        containerView = [[UIView alloc] initWithFrame:CGRectMake(5, 5, 300, 420)];
         [[containerView layer] setBorderColor:[UIColor colorWithRed:0. green:0. blue:0. alpha:0.7].CGColor];
         [[containerView layer] setBorderWidth:1.0];
         
         
         // add the web view
-        webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 280, 390)];
+        webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 300, 390)];
         webView.layer.cornerRadius = 5;
 		[webView setDelegate:self];
 		[containerView addSubview:webView];
@@ -79,9 +79,9 @@
                               highlightImgStr:nil
                                        target:self
                                      selector:@selector(onCloseButtonTouched:)];
-        btn.right = panelView.width;
+        btn.right = panelView.width ;
         btn.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-        [panelView addSubview:btn];        
+        [panelView addSubview:btn];
         
         
         indicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
@@ -132,9 +132,9 @@
     else
     {
         [self setFrame:CGRectMake(0, 0, 320, 480)];
-        [panelView setFrame:CGRectMake(10, 30, 300, 440)];
-        [containerView setFrame:CGRectMake(10, 10, 280, 420)];
-        [webView setFrame:CGRectMake(0, 0, 280, 420)];
+        [panelView setFrame:CGRectMake(5, 30, 310, 440)];
+        [containerView setFrame:CGRectMake(5, 5, 300, 430)];
+        [webView setFrame:CGRectMake(0, 0, 300, 430)];
         [indicatorView setCenter:CGPointMake(160, 240)];
     }
     
@@ -243,7 +243,7 @@
 
 - (void)loadRequestWithURL:(NSURL *)url
 {
-    NSLog(@"%@",url);
+//    NSLog(@"%@",url);
     NSURLRequest *request =[NSURLRequest requestWithURL:url
                                             cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
                                         timeoutInterval:60.0];
@@ -257,7 +257,7 @@
     UIWindow *window = [UIApplication sharedApplication].keyWindow;
 	if (!window)
     {
-		window = [[UIApplication sharedApplication].windows objectAtIndex:0];
+		window = ([UIApplication sharedApplication].windows)[0];
 	}
   	[window addSubview:self];
     
@@ -332,7 +332,7 @@
 
 - (BOOL)webView:(UIWebView *)aWebView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
-    NSLog(@"%@",request.URL.absoluteString);
+//    NSLog(@"%@",request.URL.absoluteString);
     if ([delegate respondsToSelector:@selector(authorizeWebView:shouldHandleURL:)]) {
         return [delegate authorizeWebView:self shouldHandleURL:request.URL];
     }else {
@@ -341,39 +341,5 @@
     
 }
                          
-/*
-- (BOOL)sinaHandleURLChange:(NSURL*)url
-{
 
-    NSRange range = [url.absoluteString rangeOfString:@"code="];
-    
-    if (range.location != NSNotFound)
-    {
-        NSString *code = [url.absoluteString substringFromIndex:range.location + range.length];
-        if ([code isEqualToString:@"21330"]) {  //cancel contents
-            [self onCloseButtonTouched:nil];
-            return NO;
-        }
-        if ([delegate respondsToSelector:@selector(authorizeWebView:didReceiveAuthorizeCode:)])
-        {
-            [delegate authorizeWebView:self didReceiveAuthorizeCode:code];
-        }
-        return NO;
-    }
-    return YES;
-
-    
-}
-- (BOOL)renrenHandleURLChange:(NSURL*)url
-{
-//    return NO;
-//    return YES;
-    
-
-    NSString* absolute = [url absoluteString];
-    NSRange rangeToken, rangeExpire;
-    
-    
-}
-*/                         
 @end
