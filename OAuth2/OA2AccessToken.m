@@ -25,14 +25,24 @@
 
 - (id)initWithAccessToken:(NSString *)_accessToken refreshToken:(NSString *)_refreshToken expiresDuration:(int)duration scope:(NSSet *)_scope
 {
+    NSDate* dateExpired = nil;
+    if (duration) {
+        dateExpired = [[NSDate date] dateByAddingTimeInterval:duration];
+    }
+    self = [self initWithAccessToken:_accessToken
+                        refreshToken:_refreshToken
+                           expiresAt:dateExpired
+                               scope:_scope];
+    return self;
+}
+
+- (id)initWithAccessToken:(NSString *)_accessToken refreshToken:(NSString *)_refreshToken expiresAt:(NSDate*)_expiredDate scope:(NSSet *)_scope
+{
     self = [super init];
     if (self) {
         self.accessToken = _accessToken;
         self.refreshToken = _refreshToken;
-        if (duration) {
-            NSDate* dateExpired = [[NSDate date] dateByAddingTimeInterval:duration];
-            self.expiresAt = dateExpired;
-        }
+        self.expiresAt = _expiredDate;
         self.scope = _scope;
     }
     return self;

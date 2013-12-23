@@ -23,6 +23,10 @@
 @property(readonly) NSTimeInterval exipresAtUTC;
 
 - (id)initWithAccessToken:(NSString *)accessToken refreshToken:(NSString *)refreshToken expiresDuration:(int)duration scope:(NSSet *)scope;
+
+- (id)initWithAccessToken:(NSString *)accessToken refreshToken:(NSString *)refreshToken expiresAt:(NSDate*)expiredDate scope:(NSSet *)scope;
+
+
 - (void)save;
 
 

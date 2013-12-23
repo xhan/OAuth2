@@ -10,7 +10,11 @@
 #import "JSONKit.h"
 
 
-
+#define USING_QQ_SSO 1
+#if USING_QQ_SSO
+    #import <TencentOpenAPI/TencentOAuth.h>
+    #import <TencentOpenAPI/QQApi.h>
+#endif
 
 
 
@@ -23,6 +27,9 @@
 #define kSinaWeiboAppAuthURL_iPhone        @"sinaweibosso://login"
 #define kSinaWeiboAppAuthURL_iPad          @"sinaweibohdsso://login"
 
+#define  kQQPermissionScope @"add_topic,get_user_info,add_share,add_t,add_pic_t,check_page_fans"
+
+
 @interface OAEngine(/*Private*/)
 - (NSURL*)requestURL:(OAProvider)provider;
 
@@ -33,7 +40,19 @@
 @end
 
 
+#if USING_QQ_SSO
+@interface OAEngine (Private)<TencentSessionDelegate>
+@end
+
+
 @implementation OAEngine
+{
+    TencentOAuth* _tencentOAuth;
+}
+#else
+@implementation OAEngine
+#endif
+
 @synthesize tokenSina, tokenRenRen, tokenQQ;
 - (id)init
 {    
@@ -53,6 +72,9 @@
 
 - (void)dealloc
 {
+#if USING_QQ_SSO
+    PLSafeRelease(_tencentOAuth);
+#endif
     PLSafeRelease(tokenQQ);
     PLSafeRelease(tokenRenRen);
     PLSafeRelease(tokenSina);
@@ -139,6 +161,20 @@
         }
         return ssoLogined;
 
+    }else if ( provider == OAProviderQQ){
+#if USING_QQ_SSO
+        BOOL ret = NO;
+        if ([QQApi isQQSupportApi]) {
+            if (!_tencentOAuth) {
+                _tencentOAuth = [[TencentOAuth alloc] initWithAppId:kOAQQKey andDelegate:self];
+            }
+            ret = [_tencentOAuth authorize:[kQQPermissionScope componentsSeparatedByString:@","]
+                                       inSafari:NO];
+        }
+        return ret;
+#else
+        return NO;
+#endif
     }else{
         PLOGERROR(@"NOT IMPLEMENTEED SSO FOR %d",provider);
         return NO;
@@ -211,6 +247,8 @@
                 [accessToken addInfo:uid forKey:@"uid"];
             }
         }
+        // latest token will be sent by notification
+        // a bad design :D
         self.tokenLatest = accessToken;
         
         if (isSaveTokenToDisk) {    // in other case we don't overwrite token for speicify provider
@@ -342,10 +380,21 @@
 // sso support
 - (BOOL)handleOpenURL:(NSURL*)url
 {
+    BOOL ret;
+#if USING_QQ_SSO
+    // check for qq sso
+    ret = [TencentOAuth HandleOpenURL:url];
+    if (ret) {
+        return YES;
+    }
+    
+#endif
+    
+    
     //TODO: need a value to store last sso type (weibo,qq,or other)
     if ([[url scheme] isEqualToString:kSSOCallBackURL]){
         //weibo
-        BOOL ret = [self handleSSOWeiboURL:url];
+        ret = [self handleSSOWeiboURL:url];
         if(ret) [self postNotify:OAProviderSina success:YES];
         //other
         // do nothing rightnow
@@ -394,4 +443,54 @@
         [token storeInDefaultKeychainWithServiceProviderName:providerName];
     }
 }
+
+#if USING_QQ_SSO
+#pragma mark - qq delegate
+
+
+- (void)tencentDidLogin
+{
+    PLOG(@"qq login logined!");
+    
+//    PLOG(@"%@",QQ.accessToken);
+//    PLOG(@"%@",QQ.openId);
+    NSString*token = _tencentOAuth.accessToken;
+    NSDate*expires = _tencentOAuth.expirationDate;
+    
+    if(! ([token isNonEmpty] && expires) ){
+        //get info failed
+        return;
+    }
+    
+    OA2AccessToken*atoken = [[OA2AccessToken alloc] initWithAccessToken:token refreshToken:nil expiresAt:expires scope:nil];
+    self.tokenLatest = atoken;
+    [atoken release];
+    
+    [self setToken:self.tokenLatest forProvider:OAProviderQQ save:isSaveTokenToDisk];
+    
+    
+    [self postNotify:OAProviderQQ success:YES];
+}
+
+- (void)tencentDidNotLogin:(BOOL)cancelled
+{
+    if (cancelled) {
+        PLOG(@"qq login cancel");
+    }else{
+        [self postNotify:OAProviderQQ success:NO];
+        PostMsg(@"qq login failed");
+    }
+    
+}
+
+
+- (void)tencentDidNotNetWork
+{
+    PostMsg(@"qq network error");
+    [self postNotify:OAProviderQQ success:NO];
+}
+
+
+#endif
+
 @end
