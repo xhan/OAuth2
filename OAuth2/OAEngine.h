@@ -50,6 +50,12 @@ typedef enum{
 
 #import "PLHttpClient.h"
 
+@protocol OAuth2WebAuthorizeDelegate <NSObject>
+
+- (void)setOAuthView:(UIWebView *)autherView OAProvider:(OAProvider)provider;
+
+@end
+
 @interface OAEngine : NSObject<OAuth2AuthorizeWebViewDelegate>
 {
     OA2AccessToken *tokenSina, *tokenRenRen, *tokenQQ;
@@ -73,6 +79,7 @@ typedef enum{
 @property(retain,nonatomic) OA2AccessToken*tokenRenRen;
 @property(retain,nonatomic) OA2AccessToken*tokenQQ;
 @property(nonatomic,retain) OA2AccessToken*tokenLatest;
+@property(nonatomic, assign) id<OAuth2WebAuthorizeDelegate> delegate;
 
 + (void)addNotify:(id)target sel:(SEL)selector;
 + (void)rmNotify:(id)target;

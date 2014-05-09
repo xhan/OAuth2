@@ -27,25 +27,25 @@
 
 @interface OA2AuthorizeWebView : UIView <UIWebViewDelegate> 
 {
-    UIView *panelView;
-    UIView *containerView;
+//    UIView *panelView;
+//    UIView *containerView;
     UIActivityIndicatorView *indicatorView;
 	UIWebView *webView;
     
-    UIInterfaceOrientation previousOrientation;
+//    UIInterfaceOrientation previousOrientation;
     
     id<OAuth2AuthorizeWebViewDelegate> delegate;
-    UIButton* closeBtn;
+//    UIButton* closeBtn;
 }
 
 @property (nonatomic, assign) id<OAuth2AuthorizeWebViewDelegate> delegate;
 @property (assign, nonatomic) int type;
 - (void)loadRequestWithURL:(NSURL *)url;
 
-- (void)show:(BOOL)animated;
-
-- (void)hide:(BOOL)animated;
-
+//- (void)show:(BOOL)animated;
+//
+//- (void)hide:(BOOL)animated;
+//
 //- (BOOL)sinaHandleURLChange:(NSURL*)url;
 //- (BOOL)renrenHandleURLChange:(NSURL*)url;
 
