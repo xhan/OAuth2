@@ -128,12 +128,17 @@
 
 - (BOOL)authorizeWeb:(OAProvider)provider
 {
+    // TODO: 网页授权界面修改
     type =  provider;
     OA2AuthorizeWebView*view = [[OA2AuthorizeWebView alloc] init];
     view.type = provider;
     view.delegate = self;
     [view loadRequestWithURL:[self requestURL:provider]];
-    [view show:YES];
+//    [view show:YES];
+    if ([self.delegate respondsToSelector:@selector(setOAuthView:OAProvider:)])
+    {
+        [self.delegate performSelector:@selector(setOAuthView:OAProvider:) withObject:view withObject:provider];
+    }
     [view release];
     return YES;
 }
