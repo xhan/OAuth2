@@ -135,7 +135,7 @@
     view.delegate = self;
     [view loadRequestWithURL:[self requestURL:provider]];
 //    [view show:YES];
-    if ([self.delegate respondsToSelector:@selector(setOAuthView:OAProvider:)])
+    if (self.delegate && [self.delegate respondsToSelector:@selector(setOAuthView:OAProvider:)])
     {
         [self.delegate performSelector:@selector(setOAuthView:OAProvider:) withObject:view withObject:provider];
     }
