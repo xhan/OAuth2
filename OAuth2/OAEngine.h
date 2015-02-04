@@ -42,11 +42,11 @@
 #define OAEngineNotify @"OAEngineNotify"
 
 
-typedef enum{
+typedef NS_ENUM(NSInteger, OAProvider) {
     OAProviderQQ = 0,
     OAProviderSina = 1,
-    OAProviderRenRen = 2    
-}OAProvider;
+    OAProviderRenRen = 2
+};
 
 #import "PLHttpClient.h"
 
