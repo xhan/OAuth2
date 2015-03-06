@@ -557,7 +557,7 @@
         [weakSelf setToken:weakSelf.tokenLatest forProvider:OAProviderQQ save:isSaveTokenToDisk];
         [weakSelf postNotify:OAProviderWeiXin success:YES];
     } fail:^(NSError *error) {
-        PostMsg(@"哎呀，出错啦!");
+        PostMsg(@"哎呀，微信登陆出错啦!");
     }];
 }
 
