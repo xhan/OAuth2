@@ -42,11 +42,12 @@
 #define OAEngineNotify @"OAEngineNotify"
 
 
-typedef NS_ENUM(NSInteger, OAProvider) {
+typedef enum{
     OAProviderQQ = 0,
     OAProviderSina = 1,
-    OAProviderRenRen = 2
-};
+    OAProviderRenRen = 2,
+    OAProviderWeiXin = 3,
+}OAProvider;
 
 #import "PLHttpClient.h"
 
@@ -58,7 +59,7 @@ typedef NS_ENUM(NSInteger, OAProvider) {
 
 @interface OAEngine : NSObject<OAuth2AuthorizeWebViewDelegate>
 {
-    OA2AccessToken *tokenSina, *tokenRenRen, *tokenQQ;
+    OA2AccessToken *tokenSina, *tokenRenRen, *tokenQQ, *tokenWX;
     PLHttpClient*client;
     int type;   //current action type;
     BOOL isSaveTokenToDisk;
@@ -78,6 +79,7 @@ typedef NS_ENUM(NSInteger, OAProvider) {
 @property(retain,nonatomic) OA2AccessToken*tokenSina;
 @property(retain,nonatomic) OA2AccessToken*tokenRenRen;
 @property(retain,nonatomic) OA2AccessToken*tokenQQ;
+@property(retain,nonatomic) OA2AccessToken*tokenWX;
 @property(nonatomic,retain) OA2AccessToken*tokenLatest;
 @property(nonatomic, assign) id<OAuth2WebAuthorizeDelegate> delegate;
 
@@ -92,4 +94,7 @@ typedef NS_ENUM(NSInteger, OAProvider) {
 
 - (OA2AccessToken*)accessToken:(OAProvider)p;
 - (void)setToken:(OA2AccessToken*)token forProvider:(OAProvider)provider save:(BOOL)save;
+
+- (void)handleWXLogin:(NSString *)code;
+
 @end
