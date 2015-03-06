@@ -8,7 +8,9 @@
 
 #import "OAEngine.h"
 #import "JSONKit.h"
-
+#import <WXApi.h>
+#import "PLHttpBlock.h"
+#import "APIEngine.h"
 
 #define USING_QQ_SSO 1
 #if USING_QQ_SSO
@@ -23,6 +25,7 @@
 #define ProviderNameSina NSStringADD(@"sina",AppSettings().userID)
 #define ProviderNameRenRen NSStringADD(@"renren",AppSettings().userID)
 #define ProviderNameQQ  NSStringADD(@"oauth2-qq",AppSettings().userID)
+#define ProviderNameWX  NSStringADD(@"oauth2-wx",AppSettings().userID)
 
 #define kSinaWeiboAppAuthURL_iPhone        @"sinaweibosso://login"
 #define kSinaWeiboAppAuthURL_iPad          @"sinaweibohdsso://login"
@@ -53,7 +56,7 @@
 @implementation OAEngine
 #endif
 
-@synthesize tokenSina, tokenRenRen, tokenQQ;
+@synthesize tokenSina, tokenRenRen, tokenQQ, tokenWX;
 - (id)init
 {    
     self = [super init];
@@ -68,6 +71,7 @@
     self.tokenSina   = [OA2AccessToken tokenFromDefaultKeychainWithServiceProviderName:ProviderNameSina];
     self.tokenRenRen = [OA2AccessToken tokenFromDefaultKeychainWithServiceProviderName:ProviderNameRenRen];
     self.tokenQQ     = [OA2AccessToken tokenFromDefaultKeychainWithServiceProviderName:ProviderNameQQ];
+    self.tokenWX     = [OA2AccessToken tokenFromDefaultKeychainWithServiceProviderName:ProviderNameWX];
 }
 
 - (void)dealloc
@@ -76,6 +80,7 @@
     PLSafeRelease(_tencentOAuth);
 #endif
     PLSafeRelease(tokenQQ);
+    PLSafeRelease(tokenWX);
     PLSafeRelease(tokenRenRen);
     PLSafeRelease(tokenSina);
     PLSafeRelease(_tokenLatest);
@@ -91,7 +96,10 @@
         return !!self.tokenRenRen;
     }else if (provider == OAProviderQQ) {
         return !!self.tokenQQ;
-    }else{
+    }else if (provider == OAProviderWeiXin){
+        return !!self.tokenWX;
+    }
+    else{
         return NO;
     }
     
@@ -104,7 +112,10 @@
         return self.tokenRenRen && !self.tokenRenRen.isExpired;
     }else if (provider == OAProviderQQ) {
         return self.tokenQQ && !self.tokenQQ.isExpired;
-    }else {
+    }else if (provider == OAProviderWeiXin){
+        return self.tokenWX && !self.tokenWX.isExpired;
+    }
+    else {
         return NO;
     }
     
@@ -180,7 +191,19 @@
 #else
         return NO;
 #endif
-    }else{
+    }else if (provider == OAProviderWeiXin){
+        BOOL succeed = NO;
+        if ([WXApi isWXAppSupportApi])
+        {
+            succeed = YES;
+            SendAuthReq* req =[[SendAuthReq alloc ] init];
+            req.scope = @"snsapi_userinfo";
+            req.state = @"QB_wxLogin";
+            BOOL knowed = [WXApi sendReq:req];
+        }
+        return succeed;
+    }
+    else{
         PLOGERROR(@"NOT IMPLEMENTEED SSO FOR %d",provider);
         return NO;
     }
@@ -213,6 +236,9 @@
     }else if (provider == OAProviderQQ) {
         [self.tokenQQ removeFromDefaultKeychainWithServiceProviderName:ProviderNameQQ];
         self.tokenQQ = nil;
+    }else if (provider == OAProviderWeiXin){
+        [self.tokenWX removeFromDefaultKeychainWithServiceProviderName:ProviderNameWX];
+        self.tokenWX = nil;
     }
     self.tokenLatest = nil;
     [self postNotify:provider success:NO];
@@ -424,6 +450,8 @@
             return self.tokenSina;
         case OAProviderQQ:
             return self.tokenQQ;
+        case OAProviderWeiXin:
+            return self.tokenWX;
         case OAProviderRenRen:
             return self.tokenRenRen;
         default:
@@ -443,6 +471,10 @@
     }else if (provider == OAProviderQQ){
         self.tokenQQ = token;
         providerName = ProviderNameQQ;
+    }else if (provider == OAProviderWeiXin)
+    {
+        self.tokenWX = token;
+        providerName = ProviderNameWX;
     }
     if (save) {
         [token storeInDefaultKeychainWithServiceProviderName:providerName];
@@ -451,7 +483,6 @@
 
 #if USING_QQ_SSO
 #pragma mark - qq delegate
-
 
 - (void)tencentDidLogin
 {
@@ -488,14 +519,46 @@
     
 }
 
-
 - (void)tencentDidNotNetWork
 {
     PostMsg(@"qq network error");
     [self postNotify:OAProviderQQ success:NO];
 }
 
-
 #endif
+
+
+#pragma mark - 微信授权请求获取token
+- (void)handleWXLogin:(NSString *)code
+{
+    if (!code) {
+        return;
+    }
+    PLHttpBlock *httpClient = [[PLHttpBlock alloc] init];
+    NSURL *urlForAccessToken = [APIEngine urlForAccessToken:code];
+    __unsafe_unretained OAEngine *weakSelf = self;
+    [httpClient get:urlForAccessToken ok:^(NSDictionary *result) {
+        NSString *accessToken = result[@"access_token"];
+        NSString *openid = result[@"openid"];
+        NSString *expiresIn = result[@"expires_in"];
+        NSString *refreshToken = result[@"refresh_token"];
+        NSSet *scope = result[@"scope"];
+        if ([accessToken isEmpty] && expiresIn)
+        {
+            return ;
+        }
+        OA2AccessToken*atoken = [[OA2AccessToken alloc] initWithAccessToken:accessToken refreshToken:refreshToken expiresDuration:[expiresIn intValue] scope:scope];
+        if (openid) {
+            [atoken addInfo:openid forKey:@"openid"];
+        }
+        weakSelf.tokenLatest = atoken;
+        [atoken release];
+        
+        [weakSelf setToken:weakSelf.tokenLatest forProvider:OAProviderQQ save:isSaveTokenToDisk];
+        [weakSelf postNotify:OAProviderWeiXin success:YES];
+    } fail:^(NSError *error) {
+        PostMsg(@"哎呀，微信登陆出错啦!");
+    }];
+}
 
 @end
