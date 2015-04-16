@@ -14,8 +14,8 @@
 
 #define USING_QQ_SSO 1
 #if USING_QQ_SSO
-    #import <TencentOpenAPI/TencentOAuth.h>
-    #import <TencentOpenAPI/QQApi.h>
+    #import <TencentOpenAPISDK/TencentOAuth.h>
+    #import <TencentOpenAPISDK/QQApi.h>
 #endif
 
 
